@@ -540,8 +540,8 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             )}></div>
         </div>
 
-        {/* Left side: Image + Text - Flexible (50%) */}
-        <div className="flex items-center gap-2 flex-[0_0_50%] min-w-0">
+        {/* Left side: Image + Text - Flexible (60%) */}
+        <div className="flex items-center gap-2 flex-[0_0_60%] min-w-0">
             {/* Image */}
             <div className="shrink-0 relative">
                  {event.image ? (
