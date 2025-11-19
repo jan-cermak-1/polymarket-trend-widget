@@ -115,12 +115,18 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             </div>
           </div>
           <div className={clsx(
-            "px-3 py-1 rounded-lg text-xl font-bold whitespace-nowrap",
+            "px-3 py-1.5 rounded-lg whitespace-nowrap flex flex-col items-center",
             isTrendingUp 
-              ? "bg-green-50 text-green-700" 
-              : "bg-red-50 text-red-700"
+              ? "bg-green-50" 
+              : "bg-red-50"
           )}>
-            {yesPercent}%
+            <div className="text-[10px] font-medium text-gray-600 uppercase tracking-wide">Yes</div>
+            <div className={clsx(
+              "text-xl font-bold leading-tight",
+              isTrendingUp ? "text-green-700" : "text-red-700"
+            )}>
+              {yesPercent}%
+            </div>
           </div>
         </div>
 
@@ -386,14 +392,20 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                 )}
             </div>
 
-            {/* Price Button */}
+            {/* Price Button with Label */}
             <div className={clsx(
-                "w-12 py-1 rounded text-center text-xs font-bold transition-colors",
+                "flex flex-col items-center py-1 px-2 rounded transition-colors",
                 isTrendingUp 
-                    ? "bg-green-50 text-green-700 group-hover:bg-green-100" 
-                    : "bg-red-50 text-red-700 group-hover:bg-red-100"
+                    ? "bg-green-50 group-hover:bg-green-100" 
+                    : "bg-red-50 group-hover:bg-red-100"
             )}>
-                {yesPercent}%
+                <div className="text-[9px] font-medium text-gray-500 uppercase tracking-wide leading-none">Yes</div>
+                <div className={clsx(
+                    "text-xs font-bold leading-tight mt-0.5",
+                    isTrendingUp ? "text-green-700" : "text-red-700"
+                )}>
+                    {yesPercent}%
+                </div>
             </div>
         </div>
     </div>
