@@ -113,7 +113,7 @@ export const TrendWidget: React.FC = () => {
         </div>
       </header>
 
-      <main className="flex-1 min-h-0 relative">
+      <main className="relative">
         {loading ? (
           <div className="flex gap-4 h-full">
             <div className="flex-1 flex flex-col gap-3">
@@ -135,14 +135,14 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-3">
-            {/* First 3 boxes: Large items with graphs */}
+          <div className="grid grid-cols-4 gap-3 h-[420px]">
+            {/* First 3 boxes: Large items with graphs - fill height */}
             {events.slice(0, 3).map((event) => (
               <MarketCard key={event.id} event={event} isTopItem={true} />
             ))}
             
-            {/* 4th box: Compact list of remaining items */}
-            <div className="flex flex-col gap-0 border-l border-gray-100 pl-3 overflow-y-auto">
+            {/* 4th box: Compact list of remaining items - no scroll, fits exactly */}
+            <div className="flex flex-col justify-between border-l border-gray-100 pl-3 h-full">
               {events.slice(3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}

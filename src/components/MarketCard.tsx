@@ -126,7 +126,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
     return (
-      <div ref={cardRef} className="group relative p-2.5 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex flex-col h-[240px] cursor-pointer">
+      <div ref={cardRef} className="group relative p-2.5 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer">
         
         {/* Hover Tooltip - same as compact items */}
         <div className={clsx(
@@ -389,7 +389,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
 
   // Regular compact card with tooltip for remaining items
   return (
-    <div ref={cardRef} className="group relative flex items-center gap-2 p-2 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border-b border-gray-50 last:border-0">
+    <div ref={cardRef} className="group relative flex items-center gap-2 py-1.5 px-2 hover:bg-gray-50 rounded transition-colors cursor-pointer">
         
         {/* Hover Tooltip with Chart - positioned above or below based on viewport position */}
         <div className={clsx(
