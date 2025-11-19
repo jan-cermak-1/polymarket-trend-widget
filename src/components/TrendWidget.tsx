@@ -135,16 +135,16 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* Top row: 3 items side by side */}
-            <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-[1fr_380px] gap-4">
+            {/* Left: 3 items stacked vertically */}
+            <div className="flex flex-col gap-3">
               {events.slice(0, 3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={true} />
               ))}
             </div>
             
-            {/* Bottom: Remaining 7 items (4-10) in compact list */}
-            <div className="flex flex-col gap-0 border-t border-gray-100 pt-3">
+            {/* Right: Remaining 7 items (4-10) in compact list */}
+            <div className="flex flex-col gap-0 border-l border-gray-100 pl-4">
               {events.slice(3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}
