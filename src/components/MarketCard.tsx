@@ -64,37 +64,68 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   useEffect(() => {
     let mounted = true;
 
-    if (!mainMarket?.clobTokenIds) return;
+    // For multi-choice, find the winning market and load its history
+    if (isMultiChoice) {
+      const options = getAllOptions();
+      const winningOption = options[0];
+      
+      if (!winningOption) return;
+      
+      // Find the market that corresponds to the winning option
+      const winningMarket = event.markets.find(m => 
+        (m.groupItemTitle || m.question) === winningOption.title
+      );
+      
+      if (!winningMarket?.clobTokenIds) return;
+      
+      try {
+        const tokenIds = JSON.parse(winningMarket.clobTokenIds);
+        const tokenId = tokenIds[0];
+        if (!tokenId) return;
+        
+        setLoadingHistory(true);
+        getMarketHistory(tokenId)
+          .then(data => {
+            if (mounted) {
+              setHistory(data);
+              setLoadingHistory(false);
+            }
+          })
+          .catch(() => {
+            if (mounted) setLoadingHistory(false);
+          });
+      } catch (e) {
+        console.warn('Failed to parse clobTokenIds for winning market', e);
+      }
+    } else {
+      // For binary markets, use the main market (Yes outcome)
+      if (!mainMarket?.clobTokenIds) return;
 
-    // Parse clobTokenIds (it's a JSON string array)
-    let tokenIds: string[] = [];
-    try {
-      tokenIds = JSON.parse(mainMarket.clobTokenIds);
-    } catch (e) {
-      console.warn('Failed to parse clobTokenIds', e);
-      return;
+      try {
+        const tokenIds = JSON.parse(mainMarket.clobTokenIds);
+        const tokenId = tokenIds[0];
+        if (!tokenId) return;
+
+        setLoadingHistory(true);
+        getMarketHistory(tokenId)
+          .then(data => {
+            if (mounted) {
+              setHistory(data);
+              setLoadingHistory(false);
+            }
+          })
+          .catch(() => {
+            if (mounted) setLoadingHistory(false);
+          });
+      } catch (e) {
+        console.warn('Failed to parse clobTokenIds', e);
+      }
     }
 
-    // Use the first token ID (Yes outcome) for price history
-    const tokenId = tokenIds[0];
-    if (!tokenId) return;
-
-    setLoadingHistory(true);
-    getMarketHistory(tokenId)
-        .then(data => {
-            if (mounted) {
-                setHistory(data);
-                setLoadingHistory(false);
-            }
-        })
-        .catch(() => {
-             if (mounted) setLoadingHistory(false);
-        });
-
     return () => { 
-        mounted = false;
+      mounted = false;
     };
-  }, [mainMarket?.clobTokenIds]);
+  }, [mainMarket?.clobTokenIds, isMultiChoice, event.markets]);
 
   if (!mainMarket) return null;
 
