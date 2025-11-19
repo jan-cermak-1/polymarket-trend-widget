@@ -15,37 +15,26 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   
+  // Load history immediately when component mounts
   useEffect(() => {
-    const currentRef = cardRef.current;
     let mounted = true;
 
-    if (!mainMarket?.id || !currentRef) return;
+    if (!mainMarket?.id) return;
 
-    const observer = new IntersectionObserver(
-        (entries) => {
-            if (entries[0].isIntersecting && mounted && history.length === 0 && !loadingHistory) {
-                setLoadingHistory(true);
-                getMarketHistory(mainMarket.id)
-                    .then(data => {
-                        if (mounted) {
-                            setHistory(data);
-                            setLoadingHistory(false);
-                        }
-                    })
-                    .catch(() => {
-                         if (mounted) setLoadingHistory(false);
-                    });
-                observer.disconnect();
+    setLoadingHistory(true);
+    getMarketHistory(mainMarket.id)
+        .then(data => {
+            if (mounted) {
+                setHistory(data);
+                setLoadingHistory(false);
             }
-        },
-        { threshold: 0.1 }
-    );
-
-    observer.observe(currentRef);
+        })
+        .catch(() => {
+             if (mounted) setLoadingHistory(false);
+        });
 
     return () => { 
         mounted = false;
-        observer.disconnect();
     };
   }, [mainMarket?.id]);
 
