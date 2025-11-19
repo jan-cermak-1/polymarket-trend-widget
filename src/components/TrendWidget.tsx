@@ -70,7 +70,7 @@ export const TrendWidget: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1000px] w-full mx-auto p-3 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
+    <div className="max-w-[1400px] w-full mx-auto p-4 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
       <header className="mb-2 shrink-0 relative z-10 bg-white pb-2 border-b border-gray-100">
         <div className="flex items-center justify-between gap-4">
           {/* Left: Title */}
@@ -135,16 +135,16 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
-            {/* Left column: Top 3 items with tooltips */}
-            <div className="flex flex-col gap-2.5">
+          <div className="space-y-4">
+            {/* Top row: 3 items side by side */}
+            <div className="grid grid-cols-3 gap-4">
               {events.slice(0, 3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={true} />
               ))}
             </div>
             
-            {/* Right column: Remaining 7 items (4-10) in compact list */}
-            <div className="flex flex-col gap-0">
+            {/* Bottom: Remaining 7 items (4-10) in compact list */}
+            <div className="flex flex-col gap-0 border-t border-gray-100 pt-3">
               {events.slice(3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}

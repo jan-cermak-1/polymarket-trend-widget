@@ -18,7 +18,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   const cardRef = useRef<HTMLDivElement>(null);
   const [showTooltipBelow, setShowTooltipBelow] = useState(true); // Default to below to avoid hiding under header
   
-  // Helper function to get all options sorted by percentage
+  // Helper function to get all options sorted by percentage (limit to 6)
   const getAllOptions = () => {
     return event.markets
       .map(m => {
@@ -36,7 +36,8 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
           percent: Math.round(parseFloat(price) * 100)
         };
       })
-      .sort((a, b) => b.percent - a.percent);
+      .sort((a, b) => b.percent - a.percent)
+      .slice(0, 6); // Limit to top 6 options
   };
   
   // Check if tooltip should show below (for items near top of viewport)
@@ -125,7 +126,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
     return (
-      <div ref={cardRef} className="group relative p-3 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex-1 flex flex-col min-h-0 cursor-pointer">
+      <div ref={cardRef} className="group relative p-3 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex flex-col h-[280px] cursor-pointer">
         
         {/* Hover Tooltip - same as compact items */}
         <div className={clsx(
@@ -318,7 +319,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         </div>
 
         {hasHistory && (
-          <div className="mb-1 flex-1 min-h-0 w-full bg-white rounded p-1 border border-gray-100">
+          <div className="flex-1 min-h-0 w-full bg-white rounded p-1.5 border border-gray-100">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={history} margin={{ top: 2, right: 2, left: -20, bottom: 12 }}>
                 <defs>
