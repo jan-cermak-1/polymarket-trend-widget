@@ -70,7 +70,7 @@ export const TrendWidget: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1400px] w-full mx-auto p-4 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
+    <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
       <header className="mb-2 shrink-0 relative z-10 bg-white pb-2 border-b border-gray-100">
         <div className="flex items-center justify-between gap-4">
           {/* Left: Title */}
@@ -135,16 +135,14 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-[1fr_380px] gap-4">
-            {/* Left: 3 items stacked vertically */}
-            <div className="flex flex-col gap-3">
-              {events.slice(0, 3).map((event) => (
-                <MarketCard key={event.id} event={event} isTopItem={true} />
-              ))}
-            </div>
+          <div className="grid grid-cols-4 gap-3">
+            {/* First 3 boxes: Large items with graphs */}
+            {events.slice(0, 3).map((event) => (
+              <MarketCard key={event.id} event={event} isTopItem={true} />
+            ))}
             
-            {/* Right: Remaining 7 items (4-10) in compact list */}
-            <div className="flex flex-col gap-0 border-l border-gray-100 pl-4">
+            {/* 4th box: Compact list of remaining items */}
+            <div className="flex flex-col gap-0 border-l border-gray-100 pl-3 overflow-y-auto">
               {events.slice(3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}

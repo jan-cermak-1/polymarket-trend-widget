@@ -126,7 +126,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
     return (
-      <div ref={cardRef} className="group relative p-3 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex flex-col h-[280px] cursor-pointer">
+      <div ref={cardRef} className="group relative p-2.5 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex flex-col h-[240px] cursor-pointer">
         
         {/* Hover Tooltip - same as compact items */}
         <div className={clsx(
