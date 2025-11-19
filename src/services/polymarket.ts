@@ -133,8 +133,8 @@ export const getMarketHistory = async (marketId: string): Promise<PriceHistoryPo
         const response = await axios.get(`${CLOB_URL}/prices-history`, {
             params: {
                 market: marketId,
-                interval: '1h', // 1 hour points
-                fidelity: 10,    // reduce data points
+                interval: 'max', // Get all available history (up to market lifetime)
+                fidelity: 100,    // More data points for better chart detail
             }
         });
         return response.data.history || [];
