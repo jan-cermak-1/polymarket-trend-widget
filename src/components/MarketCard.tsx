@@ -541,7 +541,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         </div>
 
         {/* Left side: Image + Text - Fixed width */}
-        <div className="flex items-center gap-2 w-[180px] shrink-0">
+        <div className="flex items-center gap-2 w-[220px] shrink-0">
             {/* Image */}
             <div className="shrink-0 relative">
                  {event.image ? (
