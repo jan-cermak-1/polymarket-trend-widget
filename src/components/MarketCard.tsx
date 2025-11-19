@@ -14,7 +14,28 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [showTooltipBelow, setShowTooltipBelow] = useState(false);
   
+  // Check if tooltip should show below (for items near top of viewport)
+  useEffect(() => {
+    const checkPosition = () => {
+      if (cardRef.current) {
+        const rect = cardRef.current.getBoundingClientRect();
+        // If card is in top 30% of viewport, show tooltip below
+        setShowTooltipBelow(rect.top < window.innerHeight * 0.3);
+      }
+    };
+    
+    checkPosition();
+    window.addEventListener('scroll', checkPosition);
+    window.addEventListener('resize', checkPosition);
+    
+    return () => {
+      window.removeEventListener('scroll', checkPosition);
+      window.removeEventListener('resize', checkPosition);
+    };
+  }, []);
+
   // Load history immediately when component mounts
   useEffect(() => {
     let mounted = true;
@@ -75,8 +96,13 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   return (
     <div ref={cardRef} className="group relative flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border-b border-gray-50 last:border-0">
         
-        {/* Hover Tooltip with Chart */}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform translate-y-1 group-hover:translate-y-0">
+        {/* Hover Tooltip with Chart - positioned above or below based on viewport position */}
+        <div className={clsx(
+          "absolute left-1/2 -translate-x-1/2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform",
+          showTooltipBelow 
+            ? "top-full mt-2 translate-y-[-4px] group-hover:translate-y-0" 
+            : "bottom-full mb-2 translate-y-1 group-hover:translate-y-0"
+        )}>
             <div className="flex gap-3 mb-3">
                 {event.image && (
                     <img 
@@ -174,8 +200,13 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
                 </div>
             </div>
 
-            {/* Little arrow pointing down */}
-            <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-b border-r border-gray-200 transform rotate-45"></div>
+            {/* Arrow pointing to the card */}
+            <div className={clsx(
+              "absolute left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-gray-200 transform rotate-45",
+              showTooltipBelow 
+                ? "top-[-6px] border-t border-l" 
+                : "bottom-[-6px] border-b border-r"
+            )}></div>
         </div>
 
         {/* Image */}
