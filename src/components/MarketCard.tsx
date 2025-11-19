@@ -98,7 +98,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
         
         {/* Hover Tooltip with Chart - positioned above or below based on viewport position */}
         <div className={clsx(
-          "absolute left-1/2 -translate-x-1/2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform",
+          "absolute left-1/2 -translate-x-1/2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform",
           showTooltipBelow 
             ? "top-full mt-2 translate-y-[-4px] group-hover:translate-y-0" 
             : "bottom-full mb-2 translate-y-1 group-hover:translate-y-0"
@@ -123,7 +123,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
             
             {/* Chart */}
             {hasHistory && (
-                <div className="mb-3 h-32 w-full">
+                <div className="mb-3 h-40 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={history} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
                             <defs>
@@ -135,13 +135,34 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
                             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
                             <XAxis 
                                 dataKey="t" 
-                                tick={{ fontSize: 10, fill: '#999' }}
+                                tick={{ fontSize: 9, fill: '#999' }}
                                 tickFormatter={(timestamp) => {
                                     const date = new Date(timestamp * 1000);
-                                    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                                    
+                                    // If data spans more than 30 days, show month/day, otherwise show day/time
+                                    if (history.length > 0) {
+                                        const firstDate = new Date(history[0].t * 1000);
+                                        const lastDate = new Date(history[history.length - 1].t * 1000);
+                                        const rangeDays = Math.floor((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24));
+                                        
+                                        if (rangeDays > 30) {
+                                            // Show month and day for longer ranges
+                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                        } else if (rangeDays > 7) {
+                                            // Show month, day for week+ ranges
+                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                        } else {
+                                            // Show day and time for short ranges
+                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                        }
+                                    }
+                                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                                 }}
-                                tickCount={3}
+                                tickCount={5}
                                 stroke="#e5e5e5"
+                                angle={-15}
+                                textAnchor="end"
+                                height={40}
                             />
                             <YAxis 
                                 domain={[0, 1]} 
