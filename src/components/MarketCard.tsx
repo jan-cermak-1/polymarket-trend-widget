@@ -97,25 +97,25 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
     return (
-      <div ref={cardRef} className="p-4 border-b-2 border-gray-100 bg-gradient-to-br from-white to-gray-50/50">
-        <div className="flex items-start gap-4 mb-3">
+      <div ref={cardRef} className="p-3 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow">
+        <div className="flex items-start gap-2 mb-2">
           {event.image && (
             <img 
               src={event.image} 
               alt={event.title} 
-              className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200"
+              className="w-12 h-12 rounded-lg object-cover border border-gray-200"
             />
           )}
-          <div className="flex-1">
-            <h3 className="font-bold text-base text-gray-900 leading-tight mb-1">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-bold text-sm text-gray-900 leading-tight mb-1 line-clamp-2">
               {event.title}
             </h3>
-            <div className="text-sm text-gray-500">
+            <div className="text-xs text-gray-500">
               ${Number(event.volume).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 1 })} Vol.
             </div>
           </div>
           <div className={clsx(
-            "px-4 py-2 rounded-lg text-2xl font-bold",
+            "px-3 py-1 rounded-lg text-xl font-bold whitespace-nowrap",
             isTrendingUp 
               ? "bg-green-50 text-green-700" 
               : "bg-red-50 text-red-700"
@@ -125,7 +125,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         </div>
 
         {hasHistory && (
-          <div className="mb-3 h-48 w-full bg-white rounded-lg p-3 border border-gray-200">
+          <div className="mb-2 h-32 w-full bg-white rounded-lg p-2 border border-gray-200">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={history} margin={{ top: 5, right: 10, left: -10, bottom: 20 }}>
                 <defs>
@@ -137,23 +137,24 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis 
                   dataKey="t" 
-                  tick={{ fontSize: 10, fill: '#666' }}
+                  tick={{ fontSize: 8, fill: '#666' }}
                   tickFormatter={(timestamp) => {
                     const date = new Date(timestamp * 1000);
                     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                   }}
-                  tickCount={6}
+                  tickCount={4}
                   stroke="#d1d5db"
-                  angle={-20}
+                  angle={-15}
                   textAnchor="end"
-                  height={50}
+                  height={30}
                 />
                 <YAxis 
                   domain={[0, 1]} 
-                  tick={{ fontSize: 10, fill: '#666' }}
+                  tick={{ fontSize: 8, fill: '#666' }}
                   tickFormatter={(value) => `${Math.round(value * 100)}%`}
-                  ticks={[0, 0.25, 0.5, 0.75, 1]}
+                  ticks={[0, 0.5, 1]}
                   stroke="#d1d5db"
+                  width={30}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -180,7 +181,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                   type="monotone" 
                   dataKey="p" 
                   stroke={chartColor} 
-                  strokeWidth={3} 
+                  strokeWidth={2} 
                   fill={`url(#gradient-large-${mainMarket.id})`} 
                   isAnimationActive={false}
                 />
@@ -189,23 +190,19 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
           </div>
         )}
 
-        <div className="flex justify-between items-center">
-          <div className="flex-1">
-            <div className="flex justify-between text-sm font-semibold mb-2">
-              <span className="text-green-600">Yes {yesPercent}%</span>
-              <span className="text-red-500">No {noPercent}%</span>
-            </div>
-            <div className="h-3 bg-gray-100 rounded-full overflow-hidden flex w-full">
-              <div 
-                className="h-full bg-green-500" 
-                style={{ width: `${yesPercent}%` }}
-              />
-              <div 
-                className="h-full bg-red-400" 
-                style={{ width: `${noPercent}%` }}
-              />
-            </div>
-          </div>
+        <div className="flex justify-between text-xs font-medium mb-1">
+          <span className="text-green-600">Yes {yesPercent}%</span>
+          <span className="text-red-500">No {noPercent}%</span>
+        </div>
+        <div className="h-2 bg-gray-100 rounded-full overflow-hidden flex w-full">
+          <div 
+            className="h-full bg-green-500" 
+            style={{ width: `${yesPercent}%` }}
+          />
+          <div 
+            className="h-full bg-red-400" 
+            style={{ width: `${noPercent}%` }}
+          />
         </div>
       </div>
     );
