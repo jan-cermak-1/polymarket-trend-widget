@@ -129,7 +129,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         
         {/* Hover Tooltip - same as compact items */}
         <div className={clsx(
-          "absolute left-1/2 -translate-x-1/2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform",
+          "absolute left-1/2 -translate-x-1/2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999] pointer-events-none transform",
           showTooltipBelow 
             ? "top-full mt-2 translate-y-[-4px] group-hover:translate-y-0" 
             : "bottom-full mb-2 translate-y-1 group-hover:translate-y-0"
@@ -409,7 +409,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         
         {/* Hover Tooltip with Chart - positioned above or below based on viewport position */}
         <div className={clsx(
-          "absolute left-1/2 -translate-x-1/2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform",
+          "absolute left-1/2 -translate-x-1/2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999] pointer-events-none transform",
           showTooltipBelow 
             ? "top-full mt-2 translate-y-[-4px] group-hover:translate-y-0" 
             : "bottom-full mb-2 translate-y-1 group-hover:translate-y-0"
