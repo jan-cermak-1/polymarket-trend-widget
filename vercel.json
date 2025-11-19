@@ -1,0 +1,17 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/polymarket/:path*",
+      "destination": "https://gamma-api.polymarket.com/:path*"
+    },
+    {
+      "source": "/api/clob/:path*",
+      "destination": "https://clob.polymarket.com/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+
