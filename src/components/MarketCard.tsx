@@ -7,9 +7,10 @@ import { clsx } from 'clsx';
 
 interface MarketCardProps {
   event: Event;
+  isTopItem?: boolean;
 }
 
-export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
+export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false }) => {
   const mainMarket = event.markets[0];
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
@@ -93,6 +94,124 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   const isTrendingUp = hasHistory ? history[history.length - 1].p >= history[0].p : yesPercent >= 50;
   const chartColor = isTrendingUp ? '#22c55e' : '#ef4444';
 
+  // Render large card with visible chart for top 3 items
+  if (isTopItem) {
+    return (
+      <div ref={cardRef} className="p-4 border-b-2 border-gray-100 bg-gradient-to-br from-white to-gray-50/50">
+        <div className="flex items-start gap-4 mb-3">
+          {event.image && (
+            <img 
+              src={event.image} 
+              alt={event.title} 
+              className="w-16 h-16 rounded-lg object-cover border-2 border-gray-200"
+            />
+          )}
+          <div className="flex-1">
+            <h3 className="font-bold text-base text-gray-900 leading-tight mb-1">
+              {event.title}
+            </h3>
+            <div className="text-sm text-gray-500">
+              ${Number(event.volume).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 1 })} Vol.
+            </div>
+          </div>
+          <div className={clsx(
+            "px-4 py-2 rounded-lg text-2xl font-bold",
+            isTrendingUp 
+              ? "bg-green-50 text-green-700" 
+              : "bg-red-50 text-red-700"
+          )}>
+            {yesPercent}%
+          </div>
+        </div>
+
+        {hasHistory && (
+          <div className="mb-3 h-48 w-full bg-white rounded-lg p-3 border border-gray-200">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={history} margin={{ top: 5, right: 10, left: -10, bottom: 20 }}>
+                <defs>
+                  <linearGradient id={`gradient-large-${mainMarket.id}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={chartColor} stopOpacity={0.3}/>
+                    <stop offset="100%" stopColor={chartColor} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="t" 
+                  tick={{ fontSize: 10, fill: '#666' }}
+                  tickFormatter={(timestamp) => {
+                    const date = new Date(timestamp * 1000);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                  }}
+                  tickCount={6}
+                  stroke="#d1d5db"
+                  angle={-20}
+                  textAnchor="end"
+                  height={50}
+                />
+                <YAxis 
+                  domain={[0, 1]} 
+                  tick={{ fontSize: 10, fill: '#666' }}
+                  tickFormatter={(value) => `${Math.round(value * 100)}%`}
+                  ticks={[0, 0.25, 0.5, 0.75, 1]}
+                  stroke="#d1d5db"
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(255, 255, 255, 0.98)', 
+                    border: '1px solid #d1d5db',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    fontSize: '12px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                  }}
+                  labelFormatter={(timestamp) => {
+                    const date = new Date((timestamp as number) * 1000);
+                    return date.toLocaleString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric', 
+                      hour: 'numeric', 
+                      minute: '2-digit',
+                      hour12: true 
+                    });
+                  }}
+                  formatter={(value: any) => [`${Math.round(value * 100)}%`, 'Probability']}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="p" 
+                  stroke={chartColor} 
+                  strokeWidth={3} 
+                  fill={`url(#gradient-large-${mainMarket.id})`} 
+                  isAnimationActive={false}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+
+        <div className="flex justify-between items-center">
+          <div className="flex-1">
+            <div className="flex justify-between text-sm font-semibold mb-2">
+              <span className="text-green-600">Yes {yesPercent}%</span>
+              <span className="text-red-500">No {noPercent}%</span>
+            </div>
+            <div className="h-3 bg-gray-100 rounded-full overflow-hidden flex w-full">
+              <div 
+                className="h-full bg-green-500" 
+                style={{ width: `${yesPercent}%` }}
+              />
+              <div 
+                className="h-full bg-red-400" 
+                style={{ width: `${noPercent}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Regular compact card with tooltip for remaining items
   return (
     <div ref={cardRef} className="group relative flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border-b border-gray-50 last:border-0">
         

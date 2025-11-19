@@ -124,8 +124,8 @@ export const TrendWidget: React.FC = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-0">
-            {events.map((event) => (
-              <MarketCard key={event.id} event={event} />
+            {events.map((event, index) => (
+              <MarketCard key={event.id} event={event} isTopItem={index < 3} />
             ))}
           </div>
         )}
