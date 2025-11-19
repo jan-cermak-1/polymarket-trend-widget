@@ -11,6 +11,7 @@ export interface Market {
   conditionId: string;
   slug: string;
   outcomePrices: string[];
+  clobTokenIds?: string; // JSON string array of token IDs for price history
   volume: number;
   active: boolean;
   closed: boolean;

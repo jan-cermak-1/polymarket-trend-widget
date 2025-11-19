@@ -19,10 +19,23 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   useEffect(() => {
     let mounted = true;
 
-    if (!mainMarket?.id) return;
+    if (!mainMarket?.clobTokenIds) return;
+
+    // Parse clobTokenIds (it's a JSON string array)
+    let tokenIds: string[] = [];
+    try {
+      tokenIds = JSON.parse(mainMarket.clobTokenIds);
+    } catch (e) {
+      console.warn('Failed to parse clobTokenIds', e);
+      return;
+    }
+
+    // Use the first token ID (Yes outcome) for price history
+    const tokenId = tokenIds[0];
+    if (!tokenId) return;
 
     setLoadingHistory(true);
-    getMarketHistory(mainMarket.id)
+    getMarketHistory(tokenId)
         .then(data => {
             if (mounted) {
                 setHistory(data);
@@ -36,7 +49,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
     return () => { 
         mounted = false;
     };
-  }, [mainMarket?.id]);
+  }, [mainMarket?.clobTokenIds]);
 
   if (!mainMarket) return null;
 
