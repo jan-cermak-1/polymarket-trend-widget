@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import type { Event, PriceHistoryPoint } from '../services/polymarket';
 import { getMarketHistory } from '../services/polymarket';
 import { TrendingUp } from 'lucide-react';
-import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, YAxis, XAxis, Tooltip, CartesianGrid } from 'recharts';
 import { clsx } from 'clsx';
 
 interface MarketCardProps {
@@ -73,8 +73,8 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
   return (
     <div ref={cardRef} className="group relative flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer border-b border-gray-50 last:border-0">
         
-        {/* Hover Tooltip */}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform translate-y-1 group-hover:translate-y-0">
+        {/* Hover Tooltip with Chart */}
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none transform translate-y-1 group-hover:translate-y-0">
             <div className="flex gap-3 mb-3">
                 {event.image && (
                     <img 
@@ -88,10 +88,72 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
                         {event.title}
                     </h4>
                     <div className="text-xs text-gray-500">
-                        Total Vol: ${Number(event.volume).toLocaleString()}
+                        ${Number(event.volume).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 1 })} Vol.
                     </div>
                 </div>
             </div>
+            
+            {/* Chart */}
+            {hasHistory && (
+                <div className="mb-3 h-32 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={history} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+                            <defs>
+                                <linearGradient id={`gradient-tooltip-${mainMarket.id}`} x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor={chartColor} stopOpacity={0.2}/>
+                                    <stop offset="100%" stopColor={chartColor} stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+                            <XAxis 
+                                dataKey="t" 
+                                tick={{ fontSize: 10, fill: '#999' }}
+                                tickFormatter={(timestamp) => {
+                                    const date = new Date(timestamp * 1000);
+                                    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                                }}
+                                tickCount={3}
+                                stroke="#e5e5e5"
+                            />
+                            <YAxis 
+                                domain={[0, 1]} 
+                                tick={{ fontSize: 10, fill: '#999' }}
+                                tickFormatter={(value) => `${Math.round(value * 100)}%`}
+                                ticks={[0, 0.25, 0.5, 0.75, 1]}
+                                stroke="#e5e5e5"
+                            />
+                            <Tooltip 
+                                contentStyle={{ 
+                                    backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                                    border: '1px solid #e5e5e5',
+                                    borderRadius: '6px',
+                                    padding: '6px 10px',
+                                    fontSize: '11px'
+                                }}
+                                labelFormatter={(timestamp) => {
+                                    const date = new Date((timestamp as number) * 1000);
+                                    return date.toLocaleString('en-US', { 
+                                        month: 'short', 
+                                        day: 'numeric', 
+                                        hour: 'numeric', 
+                                        minute: '2-digit',
+                                        hour12: true 
+                                    });
+                                }}
+                                formatter={(value: any) => [`${Math.round(value * 100)}%`, 'Price']}
+                            />
+                            <Area 
+                                type="monotone" 
+                                dataKey="p" 
+                                stroke={chartColor} 
+                                strokeWidth={2} 
+                                fill={`url(#gradient-tooltip-${mainMarket.id})`} 
+                                isAnimationActive={false}
+                            />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </div>
+            )}
             
             <div className="space-y-2">
                 <div className="flex justify-between text-xs font-medium mb-1">
