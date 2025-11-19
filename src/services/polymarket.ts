@@ -1,7 +1,23 @@
 import axios from 'axios';
 
-// Use local proxy path to avoid CORS issues
-const BASE_URL = '/api/polymarket';
+// Determine Base URL based on environment
+// In dev: use local proxy /api/...
+// In prod: use a CORS proxy to bypass limitations on GitHub Pages
+const isDev = import.meta.env.DEV;
+
+// Using a high-performance public CORS proxy for the demo
+const CORS_PROXY = 'https://corsproxy.io/?';
+
+const GAMMA_API_URL = 'https://gamma-api.polymarket.com';
+const CLOB_API_URL = 'https://clob.polymarket.com';
+
+const BASE_URL = isDev 
+  ? '/api/polymarket' 
+  : `${CORS_PROXY}${encodeURIComponent(GAMMA_API_URL)}`;
+
+const CLOB_URL = isDev
+  ? '/api/clob'
+  : `${CORS_PROXY}${encodeURIComponent(CLOB_API_URL)}`;
 
 export interface Market {
   id: string;
@@ -40,8 +56,8 @@ export interface Tag {
   label: string;
   slug: string;
   isSpecial?: boolean;
-  groupId?: string; // For grouping in UI
-  groupLabel?: string; // Label for the group
+  groupId?: string; 
+  groupLabel?: string; 
 }
 
 export interface PriceHistoryPoint {
@@ -127,7 +143,7 @@ export const getTrendingEvents = async (tagSlug: string = 'trending'): Promise<E
 
 export const getMarketHistory = async (marketId: string): Promise<PriceHistoryPoint[]> => {
     try {
-        const response = await axios.get('/api/clob/prices-history', {
+        const response = await axios.get(`${CLOB_URL}/prices-history`, {
             params: {
                 market: marketId,
                 interval: '1h', // 1 hour points
