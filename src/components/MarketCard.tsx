@@ -16,7 +16,28 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
-  const [showTooltipBelow, setShowTooltipBelow] = useState(false);
+  const [showTooltipBelow, setShowTooltipBelow] = useState(true); // Default to below to avoid hiding under header
+  
+  // Helper function to get all options sorted by percentage
+  const getAllOptions = () => {
+    return event.markets
+      .map(m => {
+        let price = '0';
+        try {
+          if (m.outcomePrices) {
+            const prices = Array.isArray(m.outcomePrices) ? m.outcomePrices : JSON.parse(m.outcomePrices);
+            price = prices[0] || '0';
+          }
+        } catch (e) {
+          console.warn('Failed to parse prices for market', m.id);
+        }
+        return {
+          title: m.groupItemTitle || m.question,
+          percent: Math.round(parseFloat(price) * 100)
+        };
+      })
+      .sort((a, b) => b.percent - a.percent);
+  };
   
   // Check if tooltip should show below (for items near top of viewport)
   useEffect(() => {
@@ -200,24 +221,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                 {isMultiChoice ? (
                     <div className="space-y-1.5">
                         <div className="text-[10px] font-semibold text-gray-600 uppercase mb-2">All Options</div>
-                        {event.markets
-                            .map(m => {
-                                let price = '0';
-                                try {
-                                    if (m.outcomePrices) {
-                                        const prices = Array.isArray(m.outcomePrices) ? m.outcomePrices : JSON.parse(m.outcomePrices);
-                                        price = prices[0] || '0';
-                                    }
-                                } catch (e) {
-                                    console.warn('Failed to parse prices for market', m.id);
-                                }
-                                return {
-                                    title: m.groupItemTitle || m.question,
-                                    percent: Math.round(parseFloat(price) * 100)
-                                };
-                            })
-                            .sort((a, b) => b.percent - a.percent)
-                            .map((option, i) => (
+                        {getAllOptions().map((option, i) => (
                                 <div key={i} className="flex items-center justify-between gap-2">
                                     <span className="text-xs text-gray-700 flex-1">{option.title}</span>
                                     <div className="flex items-center gap-2">
@@ -280,23 +284,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
           {isMultiChoice ? (
             <div className="flex flex-col items-end text-right shrink-0 max-w-[120px]">
               {(() => {
-                const winner = event.markets
-                  .map(m => {
-                    let price = '0';
-                    try {
-                      if (m.outcomePrices) {
-                        const prices = Array.isArray(m.outcomePrices) ? m.outcomePrices : JSON.parse(m.outcomePrices);
-                        price = prices[0] || '0';
-                      }
-                    } catch (e) {
-                      console.warn('Failed to parse prices for market', m.id);
-                    }
-                    return {
-                      title: m.groupItemTitle || m.question,
-                      percent: Math.round(parseFloat(price) * 100)
-                    };
-                  })
-                  .sort((a, b) => b.percent - a.percent)[0];
+                const winner = getAllOptions()[0];
                 
                 return winner ? (
                   <>
@@ -594,20 +582,39 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             </div>
 
             {/* Price Button with Label */}
-            <div className={clsx(
-                "flex flex-col items-center py-1 px-2 rounded transition-colors",
-                isTrendingUp 
-                    ? "bg-green-50 group-hover:bg-green-100" 
-                    : "bg-red-50 group-hover:bg-red-100"
-            )}>
-                <div className="text-[9px] font-medium text-gray-500 uppercase tracking-wide leading-none">Yes</div>
-                <div className={clsx(
-                    "text-sm font-bold leading-tight mt-0.5",
-                    isTrendingUp ? "text-green-700" : "text-red-700"
-                )}>
-                    {yesPercent}%
+            {isMultiChoice ? (
+                <div className="flex flex-col items-end text-right shrink-0 max-w-[100px]">
+                  {(() => {
+                    const winner = getAllOptions()[0];
+                    return winner ? (
+                      <>
+                        <div className="text-[8px] text-gray-500 mb-0.5 uppercase">Lead</div>
+                        <div className="text-[10px] font-bold text-gray-900 line-clamp-1 text-right leading-tight mb-0.5">
+                          {winner.title}
+                        </div>
+                        <div className="text-sm font-bold text-blue-600">
+                          {winner.percent}%
+                        </div>
+                      </>
+                    ) : null;
+                  })()}
                 </div>
-            </div>
+            ) : (
+                <div className={clsx(
+                    "flex flex-col items-center py-1 px-2 rounded transition-colors",
+                    isTrendingUp 
+                        ? "bg-green-50 group-hover:bg-green-100" 
+                        : "bg-red-50 group-hover:bg-red-100"
+                )}>
+                    <div className="text-[9px] font-medium text-gray-500 uppercase tracking-wide leading-none">Yes</div>
+                    <div className={clsx(
+                        "text-sm font-bold leading-tight mt-0.5",
+                        isTrendingUp ? "text-green-700" : "text-red-700"
+                    )}>
+                        {yesPercent}%
+                    </div>
+                </div>
+            )}
         </div>
     </div>
   );
