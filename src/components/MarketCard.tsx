@@ -540,8 +540,8 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             )}></div>
         </div>
 
-        {/* Left side: Image + Text - Fixed width */}
-        <div className="flex items-center gap-2 w-[220px] shrink-0">
+        {/* Left side: Image + Text - Flexible (35%) */}
+        <div className="flex items-center gap-2 flex-[0_0_35%] min-w-0">
             {/* Image */}
             <div className="shrink-0 relative">
                  {event.image ? (
@@ -563,14 +563,14 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                  <h3 className="font-medium text-gray-900 text-[12px] leading-tight truncate group-hover:text-blue-600 transition-colors">
                     {event.title}
                  </h3>
-                 <div className="text-[9px] text-gray-400 mt-0.5">
+                 <div className="text-[9px] text-gray-400 mt-0.5 truncate">
                     ${Number(event.volume24hr || event.volume).toLocaleString(undefined, { notation: "compact" })} Vol.
                  </div>
             </div>
         </div>
 
-        {/* Right Side: Sparkline & Price - Fixed width */}
-        <div className="flex items-center gap-2 shrink-0 w-[140px] justify-end">
+        {/* Middle: Sparkline - Fixed width (always same position) */}
+        <div className="flex items-center justify-center shrink-0 w-[60px]">
             {/* Mini Sparkline */}
             <div className="w-14 h-7 relative opacity-50 group-hover:opacity-100 transition-opacity">
                  {!loadingHistory && history.length > 0 ? (
@@ -598,16 +598,19 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                     <div className="w-full h-px bg-gray-100 mt-4" />
                 )}
             </div>
+        </div>
 
+        {/* Right side: Label + Price - Flexible (remaining space) */}
+        <div className="flex-1 flex items-center justify-end min-w-0">
             {/* Price Button with Label */}
             {isMultiChoice ? (
-                <div className="flex flex-col items-end text-right shrink-0 max-w-[100px]">
+                <div className="flex flex-col items-end text-right min-w-0">
                   {(() => {
                     const winner = getAllOptions()[0];
                     return winner ? (
                       <>
                         <div className="text-[8px] text-gray-500 mb-0.5 uppercase">Lead</div>
-                        <div className="text-[10px] font-bold text-gray-900 line-clamp-1 text-right leading-tight mb-0.5">
+                        <div className="text-[10px] font-bold text-gray-900 line-clamp-1 text-right leading-tight mb-0.5 truncate max-w-full">
                           {winner.title}
                         </div>
                         <div className="text-sm font-bold text-blue-600">
