@@ -139,23 +139,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event }) => {
                                 tickFormatter={(timestamp) => {
                                     const date = new Date(timestamp * 1000);
                                     
-                                    // If data spans more than 30 days, show month/day, otherwise show day/time
-                                    if (history.length > 0) {
-                                        const firstDate = new Date(history[0].t * 1000);
-                                        const lastDate = new Date(history[history.length - 1].t * 1000);
-                                        const rangeDays = Math.floor((lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24));
-                                        
-                                        if (rangeDays > 30) {
-                                            // Show month and day for longer ranges
-                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                                        } else if (rangeDays > 7) {
-                                            // Show month, day for week+ ranges
-                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                                        } else {
-                                            // Show day and time for short ranges
-                                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                                        }
-                                    }
+                                    // Show month and day for all ranges (we're showing long-term data now)
                                     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                                 }}
                                 tickCount={5}
