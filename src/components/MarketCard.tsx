@@ -152,7 +152,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
 
   const hasHistory = history.length > 1;
   const isTrendingUp = hasHistory ? history[history.length - 1].p >= history[0].p : yesPercent >= 50;
-  const chartColor = isTrendingUp ? '#22c55e' : '#ef4444';
+  const chartColor = '#3b82f6'; // Blue for all charts
 
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
