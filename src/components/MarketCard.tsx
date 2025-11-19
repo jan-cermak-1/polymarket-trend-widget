@@ -78,11 +78,17 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
 
   let outcomes: string[] = [];
   try {
-    outcomes = Array.isArray(mainMarket.outcomePrices) 
-      ? mainMarket.outcomePrices 
-      : JSON.parse(mainMarket.outcomePrices);
+    if (!mainMarket.outcomePrices) {
+      outcomes = ['0', '0'];
+    } else if (Array.isArray(mainMarket.outcomePrices)) {
+      outcomes = mainMarket.outcomePrices;
+    } else if (typeof mainMarket.outcomePrices === 'string') {
+      outcomes = JSON.parse(mainMarket.outcomePrices);
+    } else {
+      outcomes = ['0', '0'];
+    }
   } catch (e) {
-    console.error('Error parsing outcome prices', e);
+    console.error('Error parsing outcome prices', e, mainMarket.outcomePrices);
     return null;
   }
   
@@ -118,10 +124,21 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
           {isMultiChoice ? (
             <div className="flex flex-col gap-0.5 text-right">
               {event.markets
-                .map(m => ({
-                  title: m.groupItemTitle || m.question,
-                  percent: Math.round(parseFloat((Array.isArray(m.outcomePrices) ? m.outcomePrices : JSON.parse(m.outcomePrices))[0] || '0') * 100)
-                }))
+                .map(m => {
+                  let price = '0';
+                  try {
+                    if (m.outcomePrices) {
+                      const prices = Array.isArray(m.outcomePrices) ? m.outcomePrices : JSON.parse(m.outcomePrices);
+                      price = prices[0] || '0';
+                    }
+                  } catch (e) {
+                    console.warn('Failed to parse prices for market', m.id);
+                  }
+                  return {
+                    title: m.groupItemTitle || m.question,
+                    percent: Math.round(parseFloat(price) * 100)
+                  };
+                })
                 .sort((a, b) => b.percent - a.percent)
                 .slice(0, 2)
                 .map((option, i) => (
