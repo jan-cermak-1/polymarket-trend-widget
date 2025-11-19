@@ -104,25 +104,25 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
   // Render large card with visible chart for top 3 items
   if (isTopItem) {
     return (
-      <div ref={cardRef} className="p-2.5 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-md transition-shadow flex-1 flex flex-col">
-        <div className="flex items-start gap-2 mb-1.5">
+      <div ref={cardRef} className="p-2 border border-gray-200 rounded-lg bg-gradient-to-br from-white to-gray-50/50 hover:shadow-sm transition-shadow flex-1 flex flex-col min-h-0">
+        <div className="flex items-start gap-1.5 mb-1 shrink-0">
           {event.image && (
             <img 
               src={event.image} 
               alt={event.title} 
-              className="w-10 h-10 rounded-lg object-cover border border-gray-200"
+              className="w-8 h-8 rounded object-cover border border-gray-200"
             />
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="font-bold text-xs text-gray-900 leading-tight mb-0.5 line-clamp-2">
+            <h3 className="font-bold text-[11px] text-gray-900 leading-tight mb-0.5 line-clamp-2">
               {event.title}
             </h3>
-            <div className="text-[10px] text-gray-500">
-              ${Number(event.volume).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 1 })} Vol.
+            <div className="text-[9px] text-gray-400">
+              ${Number(event.volume).toLocaleString(undefined, { notation: "compact", maximumFractionDigits: 1 })}
             </div>
           </div>
           {isMultiChoice ? (
-            <div className="flex flex-col gap-0.5 text-right">
+            <div className="flex flex-col gap-0.5 text-right shrink-0">
               {event.markets
                 .map(m => {
                   let price = '0';
@@ -142,22 +142,22 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
                 .sort((a, b) => b.percent - a.percent)
                 .slice(0, 2)
                 .map((option, i) => (
-                  <div key={i} className="flex items-center gap-1.5">
-                    <span className="text-[9px] text-gray-600 truncate max-w-[80px]">{option.title}</span>
-                    <span className="text-xs font-bold text-gray-900 bg-gray-100 px-1.5 py-0.5 rounded">{option.percent}%</span>
+                  <div key={i} className="flex items-center gap-1">
+                    <span className="text-[8px] text-gray-600 truncate max-w-[60px]">{option.title}</span>
+                    <span className="text-[10px] font-bold text-gray-900 bg-gray-100 px-1 py-0.5 rounded">{option.percent}%</span>
                   </div>
                 ))}
             </div>
           ) : (
             <div className={clsx(
-              "px-2 py-1 rounded-lg whitespace-nowrap flex flex-col items-center",
+              "px-1.5 py-0.5 rounded whitespace-nowrap flex flex-col items-center shrink-0",
               isTrendingUp 
                 ? "bg-green-50" 
                 : "bg-red-50"
             )}>
-              <div className="text-[9px] font-medium text-gray-600 uppercase tracking-wide">Yes</div>
+              <div className="text-[8px] font-medium text-gray-600 uppercase tracking-wide leading-none">Yes</div>
               <div className={clsx(
-                "text-base font-bold leading-tight",
+                "text-sm font-bold leading-tight",
                 isTrendingUp ? "text-green-700" : "text-red-700"
               )}>
                 {yesPercent}%
@@ -167,36 +167,36 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         </div>
 
         {hasHistory && (
-          <div className="mb-1.5 flex-1 min-h-0 w-full bg-white rounded-lg p-1.5 border border-gray-200">
+          <div className="mb-1 flex-1 min-h-0 w-full bg-white rounded p-1 border border-gray-100">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={history} margin={{ top: 2, right: 5, left: -15, bottom: 15 }}>
+              <AreaChart data={history} margin={{ top: 2, right: 2, left: -20, bottom: 12 }}>
                 <defs>
                   <linearGradient id={`gradient-large-${mainMarket.id}`} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={chartColor} stopOpacity={0.3}/>
                     <stop offset="100%" stopColor={chartColor} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" vertical={false} />
                 <XAxis 
                   dataKey="t" 
-                  tick={{ fontSize: 7, fill: '#666' }}
+                  tick={{ fontSize: 6, fill: '#999' }}
                   tickFormatter={(timestamp) => {
                     const date = new Date(timestamp * 1000);
                     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                   }}
                   tickCount={3}
-                  stroke="#d1d5db"
-                  angle={-10}
+                  stroke="#e5e5e5"
+                  angle={-5}
                   textAnchor="end"
-                  height={25}
+                  height={20}
                 />
                 <YAxis 
                   domain={[0, 1]} 
-                  tick={{ fontSize: 7, fill: '#666' }}
+                  tick={{ fontSize: 6, fill: '#999' }}
                   tickFormatter={(value) => `${Math.round(value * 100)}%`}
-                  ticks={[0, 0.5, 1]}
-                  stroke="#d1d5db"
-                  width={25}
+                  ticks={[0, 1]}
+                  stroke="#e5e5e5"
+                  width={20}
                 />
                 <Tooltip 
                   contentStyle={{ 
@@ -233,11 +233,11 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         )}
 
         <div className="shrink-0">
-          <div className="flex justify-between text-[10px] font-medium mb-0.5">
+          <div className="flex justify-between text-[8px] font-medium mb-0.5">
             <span className="text-green-600">Yes {yesPercent}%</span>
             <span className="text-red-500">No {noPercent}%</span>
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden flex w-full">
+          <div className="h-1 bg-gray-100 rounded-full overflow-hidden flex w-full">
             <div 
               className="h-full bg-green-500" 
               style={{ width: `${yesPercent}%` }}

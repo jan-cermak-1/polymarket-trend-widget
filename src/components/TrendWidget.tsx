@@ -70,15 +70,15 @@ export const TrendWidget: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1600px] w-full mx-auto p-4 h-screen max-h-screen overflow-hidden bg-white text-gray-900 font-sans border-x border-gray-100 shadow-sm flex flex-col">
-      <header className="mb-3 space-y-2 shrink-0">
-        <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-            <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-black" />
-                <h1 className="text-lg font-bold tracking-tight text-black">Markets</h1>
+    <div className="max-w-[1000px] w-full mx-auto p-3 max-h-[600px] overflow-hidden bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col">
+      <header className="mb-2 space-y-1.5 shrink-0">
+        <div className="flex justify-between items-center pb-1.5 border-b border-gray-100">
+            <div className="flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4 text-black" />
+                <h1 className="text-base font-bold tracking-tight text-black">Markets</h1>
             </div>
           
-          <div className="flex items-center gap-3 text-[11px] text-gray-500 font-medium">
+          <div className="flex items-center gap-2 text-[10px] text-gray-500 font-medium">
             {isRefreshing ? (
                 <span className="flex items-center gap-1 text-blue-600">
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -130,17 +130,17 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-6 h-full">
-            {/* Left column: Top 3 items */}
-            <div className="flex flex-col gap-3 h-full justify-between">
+          <div className="grid grid-cols-[300px_1fr] gap-3 h-full">
+            {/* Left column: Top 3 items - smaller */}
+            <div className="flex flex-col gap-2 h-full">
               {events.slice(0, 3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={true} />
               ))}
             </div>
             
-            {/* Right column: Remaining items */}
-            <div className="flex flex-col gap-0 h-full justify-between overflow-y-auto">
-              {events.slice(3).map((event) => (
+            {/* Right column: All 10 items in compact list */}
+            <div className="flex flex-col gap-0 h-full overflow-y-auto">
+              {events.map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}
             </div>
