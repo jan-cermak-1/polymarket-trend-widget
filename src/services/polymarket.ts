@@ -1,23 +1,9 @@
 import axios from 'axios';
 
-// Determine Base URL based on environment
-// In dev: use local proxy /api/...
-// In prod: use a CORS proxy to bypass limitations on GitHub Pages
-const isDev = import.meta.env.DEV;
-
-// Using a high-performance public CORS proxy for the demo
-const CORS_PROXY = 'https://corsproxy.io/?';
-
-const GAMMA_API_URL = 'https://gamma-api.polymarket.com';
-const CLOB_API_URL = 'https://clob.polymarket.com';
-
-const BASE_URL = isDev 
-  ? '/api/polymarket' 
-  : `${CORS_PROXY}${encodeURIComponent(GAMMA_API_URL)}`;
-
-const CLOB_URL = isDev
-  ? '/api/clob'
-  : `${CORS_PROXY}${encodeURIComponent(CLOB_API_URL)}`;
+// For Vercel deployment with rewrites configured in vercel.json
+// Both local dev (vite proxy) and production (vercel rewrites) use the same paths
+const BASE_URL = '/api/polymarket';
+const CLOB_URL = '/api/clob';
 
 export interface Market {
   id: string;
