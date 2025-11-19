@@ -71,24 +71,35 @@ export const TrendWidget: React.FC = () => {
 
   return (
     <div className="max-w-[1000px] w-full mx-auto p-3 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
-      <header className="mb-2 space-y-1.5 shrink-0 relative z-10 bg-white">
-        <div className="flex justify-between items-center pb-1.5 border-b border-gray-100">
-            <div className="flex items-center gap-1.5">
-                <TrendingUp className="w-4 h-4 text-black" />
-                <h1 className="text-base font-bold tracking-tight text-black">Markets</h1>
-            </div>
+      <header className="mb-2 shrink-0 relative z-10 bg-white pb-2 border-b border-gray-100">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left: Title */}
+          <div className="flex items-center gap-2 shrink-0">
+            <TrendingUp className="w-4 h-4 text-black" />
+            <h1 className="text-sm font-bold tracking-tight text-black whitespace-nowrap">Polymarket Widget</h1>
+          </div>
           
-          <div className="flex items-center gap-2 text-[10px] text-gray-500 font-medium">
+          {/* Center: Category Select */}
+          <div className="flex-1 max-w-[300px]">
+            <CategorySelect 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelect={handleCategorySelect}
+            />
+          </div>
+          
+          {/* Right: Timer & Refresh */}
+          <div className="flex items-center gap-2 text-[10px] text-gray-500 font-medium shrink-0">
             {isRefreshing ? (
-                <span className="flex items-center gap-1 text-blue-600">
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                    Updating...
-                </span>
+              <span className="flex items-center gap-1 text-blue-600">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span className="hidden sm:inline">Updating...</span>
+              </span>
             ) : (
-                <span className="flex items-center gap-1 tabular-nums" title="Next update in">
-                    <Clock className="w-3 h-3" />
-                    {formatTime(timeToNextRefresh)}
-                </span>
+              <span className="flex items-center gap-1 tabular-nums" title="Next update in">
+                <Clock className="w-3 h-3" />
+                {formatTime(timeToNextRefresh)}
+              </span>
             )}
             
             <button 
@@ -100,12 +111,6 @@ export const TrendWidget: React.FC = () => {
             </button>
           </div>
         </div>
-        
-        <CategorySelect 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelect={handleCategorySelect}
-        />
       </header>
 
       <main className="flex-1 min-h-0 relative">
