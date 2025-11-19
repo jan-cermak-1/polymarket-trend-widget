@@ -382,23 +382,6 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             </ResponsiveContainer>
           </div>
         )}
-
-        <div className="shrink-0">
-          <div className="flex justify-between text-[10px] font-medium mb-1">
-            <span className="text-green-600">Yes {yesPercent}%</span>
-            <span className="text-red-500">No {noPercent}%</span>
-          </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden flex w-full">
-            <div 
-              className="h-full bg-green-500" 
-              style={{ width: `${yesPercent}%` }}
-            />
-            <div 
-              className="h-full bg-red-400" 
-              style={{ width: `${noPercent}%` }}
-            />
-          </div>
-        </div>
       </div>
     );
   }
