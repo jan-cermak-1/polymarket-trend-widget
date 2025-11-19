@@ -540,34 +540,37 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
             )}></div>
         </div>
 
-        {/* Image */}
-        <div className="shrink-0 relative">
-             {event.image ? (
-                <img 
-                    src={event.image} 
-                    alt={event.title} 
-                    className="w-8 h-8 rounded object-cover border border-gray-100"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
-            ) : (
-                <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 text-gray-400" />
-                </div>
-            )}
-        </div>
-     
-        {/* Text Content */}
-        <div className="flex-1 min-w-0">
-             <h3 className="font-medium text-gray-900 text-[13px] leading-tight truncate group-hover:text-blue-600 transition-colors">
-                {event.title}
-             </h3>
-             <div className="text-[10px] text-gray-400 mt-0.5">
-                ${Number(event.volume24hr || event.volume).toLocaleString(undefined, { notation: "compact" })} Vol.
-             </div>
+        {/* Left side: Image + Text - Fixed width */}
+        <div className="flex items-center gap-2 w-[180px] shrink-0">
+            {/* Image */}
+            <div className="shrink-0 relative">
+                 {event.image ? (
+                    <img 
+                        src={event.image} 
+                        alt={event.title} 
+                        className="w-8 h-8 rounded object-cover border border-gray-100"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                ) : (
+                    <div className="w-8 h-8 rounded bg-gray-100 flex items-center justify-center">
+                        <TrendingUp className="w-4 h-4 text-gray-400" />
+                    </div>
+                )}
+            </div>
+         
+            {/* Text Content */}
+            <div className="flex-1 min-w-0">
+                 <h3 className="font-medium text-gray-900 text-[12px] leading-tight truncate group-hover:text-blue-600 transition-colors">
+                    {event.title}
+                 </h3>
+                 <div className="text-[9px] text-gray-400 mt-0.5">
+                    ${Number(event.volume24hr || event.volume).toLocaleString(undefined, { notation: "compact" })} Vol.
+                 </div>
+            </div>
         </div>
 
-        {/* Right Side: Sparkline & Price */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        {/* Right Side: Sparkline & Price - Fixed width */}
+        <div className="flex items-center gap-2 shrink-0 w-[140px] justify-end">
             {/* Mini Sparkline */}
             <div className="w-14 h-7 relative opacity-50 group-hover:opacity-100 transition-opacity">
                  {!loadingHistory && history.length > 0 ? (
