@@ -130,9 +130,9 @@ export const TrendWidget: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-[300px_1fr] gap-3 h-full">
-            {/* Left column: Top 3 items - smaller */}
-            <div className="flex flex-col gap-2 h-full">
+          <div className="grid grid-cols-2 gap-4 h-full">
+            {/* Left column: Top 3 items with tooltips */}
+            <div className="flex flex-col gap-2.5 h-full">
               {events.slice(0, 3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={true} />
               ))}
