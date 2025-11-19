@@ -138,9 +138,9 @@ export const TrendWidget: React.FC = () => {
               ))}
             </div>
             
-            {/* Right column: All 10 items in compact list */}
+            {/* Right column: Remaining 7 items (4-10) in compact list */}
             <div className="flex flex-col gap-0">
-              {events.map((event) => (
+              {events.slice(3).map((event) => (
                 <MarketCard key={event.id} event={event} isTopItem={false} />
               ))}
             </div>
