@@ -9,10 +9,6 @@
       "destination": "https://clob.polymarket.com/:path*"
     },
     {
-      "source": "/api/news/rss/:path*",
-      "destination": "https://news.google.com/rss/:path*"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

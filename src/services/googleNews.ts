@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// For Vercel deployment with rewrites
-const RSS_BASE_URL = '/api/news/rss';
+// For Vercel deployment with serverless function
+const RSS_BASE_URL = '/api/news';
 
 export interface NewsItem {
   id: string;
@@ -33,17 +33,15 @@ export const getNewsCategories = (): NewsCategory[] => [
 
 export const getGoogleNews = async (category: NewsCategory): Promise<NewsItem[]> => {
   try {
-    const url = `${RSS_BASE_URL}/search`;
-    const params = {
+    const params = new URLSearchParams({
       hl: 'en-US',
       gl: 'US',
       ceid: 'US:en',
       q: category.query,
-    };
+    });
 
-    // Note: Google RSS returns XML
-    const response = await axios.get(url, { 
-      params,
+    // Note: Google RSS returns XML via serverless function
+    const response = await axios.get(`${RSS_BASE_URL}?${params.toString()}`, { 
       responseType: 'text',
       timeout: 10000 // 10 second timeout
     });
