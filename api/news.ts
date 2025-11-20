@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // GNews API - Free tier: 100 requests/day
 // https://gnews.io/
-const GNEWS_API_KEY = process.env.GNEWS_API_KEY || 'demo'; // User needs to set this in Vercel env vars
+const GNEWS_API_KEY = process.env.GNEWS_API_KEY || 'f79b955fb4edd4ebc9dfd481154c2924';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
