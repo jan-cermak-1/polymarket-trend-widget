@@ -3,6 +3,7 @@ import { NewsWidget } from './components/NewsWidget';
 import { TechmemeWidget } from './components/TechmemeWidget';
 import { RedditWidget } from './components/RedditWidget';
 import { BettingWidget } from './components/BettingWidget';
+import { ESPNWidget } from './components/ESPNWidget';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <TechmemeWidget />
       <RedditWidget />
       <BettingWidget />
+      <ESPNWidget />
     </div>
   );
 }
