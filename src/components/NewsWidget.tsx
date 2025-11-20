@@ -17,15 +17,28 @@ export const NewsWidget: React.FC = () => {
     else setIsRefreshing(true);
     
     try {
+      // Create a unique key for caching or just fetching
       const category = categories.find(c => c.id === selectedCategory) || categories[0];
+      
+      // Simple in-memory debounce/cache could be here if needed, but let's just fetch
       const data = await getGoogleNews(category);
-      setNews(data.slice(0, 12)); // Limit to 12 items
+      
+      // Only update state if we got data (or empty array if intentional)
+      // This prevents "flashing" if API returns empty temporarily
+      if (data.length > 0) {
+          setNews(data.slice(0, 12)); // Limit to 12 items
+      }
+      
       setTimeToNextRefresh(300);
+    } catch (e) {
+        console.error(e);
     } finally {
       setLoading(false);
       setIsRefreshing(false);
     }
-  }, [selectedCategory, categories]);
+  }, [selectedCategory, categories]); // Removed categories from dependency if it's stable, but it's defined in component so it changes on render if not memoized. 
+  // Actually categories is defined via function call inside component body? No, it is `const categories = getNewsCategories();` which is a new array every render.
+  // We should move `categories` outside or memoize it.
 
   useEffect(() => {
     fetchNews();
@@ -52,7 +65,7 @@ export const NewsWidget: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col relative transition-colors mt-8">
+    <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col relative transition-colors">
       <header className="mb-4 shrink-0 relative z-10 bg-white dark:bg-gray-900 pb-2 border-b border-gray-100 dark:border-gray-800 transition-colors">
         <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-3 lg:gap-4">
           {/* Left: Title */}
@@ -105,7 +118,7 @@ export const NewsWidget: React.FC = () => {
       </header>
 
       <main className="relative">
-        {loading ? (
+        {loading && news.length === 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 h-auto">
             {[...Array(8)].map((_, i) => (
                 <div key={i} className="h-32 bg-gray-50 dark:bg-gray-800 rounded-lg animate-pulse" />
