@@ -9,9 +9,12 @@
       "destination": "https://clob.polymarket.com/:path*"
     },
     {
+      "source": "/api/news/:path*",
+      "destination": "https://news.google.com/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-
