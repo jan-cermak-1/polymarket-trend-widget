@@ -4,7 +4,6 @@ import { ArrowUp, MessageCircle } from 'lucide-react';
 
 interface RedditCardProps {
   post: RedditPost;
-  index: number;
 }
 
 const getTimeAgo = (dateString: string): string => {
@@ -27,7 +26,7 @@ const formatNumber = (num: number): string => {
   return num.toString();
 };
 
-const RedditCardComponent: React.FC<RedditCardProps> = ({ post, index }) => {
+const RedditCardComponent: React.FC<RedditCardProps> = ({ post }) => {
   return (
     <a
       href={post.url}

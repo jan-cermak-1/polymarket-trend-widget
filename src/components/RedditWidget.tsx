@@ -84,8 +84,8 @@ export const RedditWidget: React.FC = () => {
           </div>
         ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {posts.map((post, index) => (
-                    <RedditCard key={post.id} post={post} index={index} />
+                {posts.map((post) => (
+                    <RedditCard key={post.id} post={post} />
                 ))}
             </div>
         )}
