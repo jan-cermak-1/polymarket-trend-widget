@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import type { NewsItem } from '../services/googleNews';
 import { ExternalLink, Clock } from 'lucide-react';
 
@@ -7,7 +7,7 @@ interface NewsCardProps {
   index: number;
 }
 
-export const NewsCard: React.FC<NewsCardProps> = ({ item, index }) => {
+const NewsCardComponent: React.FC<NewsCardProps> = ({ item, index }) => {
   // Helper to format relative time
   const getTimeAgo = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -38,6 +38,18 @@ export const NewsCard: React.FC<NewsCardProps> = ({ item, index }) => {
         </div>
       </div>
 
+      {item.image && (
+        <div className="mb-2 w-full h-32 bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden">
+            <img 
+                src={item.image} 
+                alt="" 
+                className="w-full h-full object-cover object-center opacity-90 group-hover:opacity-100 transition-opacity"
+                loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+        </div>
+      )}
+
       <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-snug mb-auto line-clamp-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
         {item.title}
       </h3>
@@ -52,3 +64,5 @@ export const NewsCard: React.FC<NewsCardProps> = ({ item, index }) => {
     </a>
   );
 };
+
+export const NewsCard = memo(NewsCardComponent);
