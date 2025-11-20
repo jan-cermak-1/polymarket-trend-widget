@@ -1,7 +1,6 @@
 import React from 'react';
 import type { NewsItem } from '../services/googleNews';
 import { ExternalLink, Clock } from 'lucide-react';
-import { clsx } from 'clsx';
 
 interface NewsCardProps {
   item: NewsItem;
@@ -53,4 +52,3 @@ export const NewsCard: React.FC<NewsCardProps> = ({ item, index }) => {
     </a>
   );
 };
-

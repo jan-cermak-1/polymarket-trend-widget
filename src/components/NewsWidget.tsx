@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { getNewsCategories, getGoogleNews } from '../services/googleNews';
-import type { NewsCategory, NewsItem } from '../services/googleNews';
+import type { NewsItem } from '../services/googleNews';
 import { NewsCard } from './NewsCard';
 import { Loader2, RefreshCw, Newspaper, Clock, ChevronDown } from 'lucide-react';
 
@@ -25,7 +25,7 @@ export const NewsWidget: React.FC = () => {
       setLoading(false);
       setIsRefreshing(false);
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, categories]);
 
   useEffect(() => {
     fetchNews();
@@ -129,4 +129,3 @@ export const NewsWidget: React.FC = () => {
     </div>
   );
 };
-
