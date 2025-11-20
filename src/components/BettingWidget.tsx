@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUpcomingOdds } from '../services/theOddsApi';
-import type { Game, Bookmaker } from '../services/theOddsApi';
+import type { Game } from '../services/theOddsApi';
 import { Loader2, RefreshCw, Trophy, Clock, AlertTriangle } from 'lucide-react';
-import { clsx } from 'clsx';
 
 export const BettingWidget: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
@@ -170,4 +169,3 @@ export const BettingWidget: React.FC = () => {
     </div>
   );
 };
-
