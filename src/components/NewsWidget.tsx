@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getNewsCategories, getGoogleNews } from '../services/googleNews';
+import { getNewsCategories, getGNews } from '../services/googleNews';
 import type { NewsItem } from '../services/googleNews';
 import { NewsCard } from './NewsCard';
 import { Newspaper } from 'lucide-react';
 
 export const NewsWidget: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('general');
+  const [selectedCategory, setSelectedCategory] = useState<string>('top');
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +15,7 @@ export const NewsWidget: React.FC = () => {
     try {
       const categories = getNewsCategories();
       const category = categories.find(c => c.id === selectedCategory) || categories[0];
-      const data = await getGoogleNews(category);
+      const data = await getGNews(category);
       setNews(data.slice(0, 12)); // Limit to 12 items
     } catch (error) {
       console.error('Failed to fetch news:', error);

@@ -36,8 +36,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json(cached.data);
     }
     
-    // Build GNews API URL
-    const url = new URL('https://gnews.io/api/v4/search');
+    // Build GNews API URL - use top-headlines for category, search for query
+    let baseUrl = '';
+    if (q) {
+      baseUrl = 'https://gnews.io/api/v4/search';
+    } else {
+      baseUrl = 'https://gnews.io/api/v4/top-headlines';
+    }
+    
+    const url = new URL(baseUrl);
     
     if (q) {
       url.searchParams.set('q', q as string);
