@@ -3,7 +3,7 @@ import { getTags, getTrendingEvents } from '../services/polymarket';
 import type { Tag, Event } from '../services/polymarket';
 import { CategorySelect } from './CategorySelect';
 import { MarketCard } from './MarketCard';
-import { Loader2, RefreshCw, TrendingUp, Clock } from 'lucide-react';
+import { Loader2, RefreshCw, TrendingUp, Clock, Moon, Sun, Monitor } from 'lucide-react';
 
 export const TrendWidget: React.FC = () => {
   const [categories, setCategories] = useState<Tag[]>([]);
@@ -12,6 +12,56 @@ export const TrendWidget: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timeToNextRefresh, setTimeToNextRefresh] = useState<number>(300); // 5 minutes in seconds
+  
+  // Theme State
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
+    return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
+  });
+
+  // Mobile Detection
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Apply Theme
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const applyTheme = () => {
+      if (
+        theme === 'dark' || 
+        (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    };
+
+    applyTheme();
+    localStorage.setItem('theme', theme);
+
+    // Listener for system changes if in system mode
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handler = () => applyTheme();
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }
+  }, [theme]);
+
+  // Cycle Theme: System -> Light -> Dark
+  const cycleTheme = () => {
+    setTheme(current => {
+      if (current === 'system') return 'light';
+      if (current === 'light') return 'dark';
+      return 'system';
+    });
+  };
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -70,17 +120,17 @@ export const TrendWidget: React.FC = () => {
   };
 
   return (
-    <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white text-gray-900 font-sans border border-gray-200 rounded-lg shadow-sm flex flex-col relative">
-      <header className="mb-2 shrink-0 relative z-10 bg-white pb-2 border-b border-gray-100">
-        <div className="flex items-center justify-between gap-4">
+    <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col relative transition-colors">
+      <header className="mb-2 shrink-0 relative z-10 bg-white dark:bg-gray-900 pb-2 border-b border-gray-100 dark:border-gray-800 transition-colors">
+        <div className="flex flex-wrap lg:flex-nowrap items-center justify-between gap-3 lg:gap-4">
           {/* Left: Title */}
           <div className="flex items-center gap-2 shrink-0">
-            <TrendingUp className="w-4 h-4 text-black" />
-            <h1 className="text-sm font-bold tracking-tight text-black whitespace-nowrap">Polymarket Widget</h1>
+            <TrendingUp className="w-4 h-4 text-black dark:text-white" />
+            <h1 className="text-sm font-bold tracking-tight text-black dark:text-white whitespace-nowrap">Polymarket Widget</h1>
           </div>
           
-          {/* Center: Category Select */}
-          <div className="flex-1 max-w-[300px]">
+          {/* Center: Category Select - full width on mobile */}
+          <div className="order-3 lg:order-2 w-full lg:w-auto flex-1 lg:max-w-[300px]">
             <CategorySelect 
               categories={categories}
               selectedCategory={selectedCategory}
@@ -88,10 +138,10 @@ export const TrendWidget: React.FC = () => {
             />
           </div>
           
-          {/* Right: Timer & Refresh */}
-          <div className="flex items-center gap-2 text-[10px] text-gray-500 font-medium shrink-0">
+          {/* Right: Timer & Refresh & Theme */}
+          <div className="order-2 lg:order-3 flex items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400 font-medium shrink-0 ml-auto lg:ml-0">
             {isRefreshing ? (
-              <span className="flex items-center gap-1 text-blue-600">
+              <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                 <Loader2 className="w-3 h-3 animate-spin" />
                 <span className="hidden sm:inline">Updating...</span>
               </span>
@@ -104,10 +154,22 @@ export const TrendWidget: React.FC = () => {
             
             <button 
               onClick={() => fetchEvents(false)}
-              className="p-1 hover:bg-gray-100 rounded-md transition-colors"
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
               title="Refresh now"
             >
               <RefreshCw className="w-3 h-3" />
+            </button>
+
+            <div className="w-px h-3 bg-gray-200 dark:bg-gray-700 mx-0.5" />
+
+            <button 
+              onClick={cycleTheme}
+              className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors flex items-center gap-1"
+              title={`Current theme: ${theme}`}
+            >
+              {theme === 'light' && <Sun className="w-3 h-3" />}
+              {theme === 'dark' && <Moon className="w-3 h-3" />}
+              {theme === 'system' && <Monitor className="w-3 h-3" />}
             </button>
           </div>
         </div>
@@ -115,39 +177,59 @@ export const TrendWidget: React.FC = () => {
 
       <main className="relative">
         {loading ? (
-          <div className="flex gap-4 h-full">
-            <div className="flex-1 flex flex-col gap-3">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-full bg-gray-50 rounded-md animate-pulse" />
+          <div className="flex flex-col lg:flex-row gap-4 h-[600px] lg:h-[420px]">
+            {/* Mobile Loading Skeleton */}
+            <div className="lg:hidden flex-1 flex flex-col gap-1">
+               {[...Array(10)].map((_, i) => (
+                <div key={i} className="h-12 bg-gray-50 dark:bg-gray-800 rounded-md animate-pulse" />
               ))}
             </div>
-            <div className="flex-1 flex flex-col gap-1">
+
+            {/* Desktop Loading Skeleton */}
+            <div className="hidden lg:flex flex-1 flex-col gap-3">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-full bg-gray-50 dark:bg-gray-800 rounded-md animate-pulse" />
+              ))}
+            </div>
+            <div className="hidden lg:flex flex-1 flex-col gap-1">
               {[...Array(7)].map((_, i) => (
-                <div key={i} className="h-12 bg-gray-50 rounded-md animate-pulse" />
+                <div key={i} className="h-12 bg-gray-50 dark:bg-gray-800 rounded-md animate-pulse" />
               ))}
             </div>
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-12 px-4">
-            <p className="text-gray-500 text-sm font-medium mb-1">No active markets found</p>
-            <p className="text-gray-400 text-xs">
+            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">No active markets found</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs">
                 Try selecting a different category or check back later.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-4 gap-3 h-[420px]">
-            {/* First 3 boxes: Large items with graphs - fill height */}
-            {events.slice(0, 3).map((event) => (
-              <MarketCard key={event.id} event={event} isTopItem={true} />
-            ))}
-            
-            {/* 4th box: Compact list of remaining items - no scroll, fits exactly */}
-            <div className="flex flex-col justify-between border-l border-gray-100 pl-3 h-full">
-              {events.slice(3).map((event) => (
-                <MarketCard key={event.id} event={event} isTopItem={false} />
-              ))}
-            </div>
-          </div>
+          <>
+             {/* Mobile View: Single List of 10 items (all compact) */}
+             {isMobile ? (
+               <div className="flex flex-col gap-1 h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+                 {events.map((event) => (
+                   <MarketCard key={event.id} event={event} isTopItem={false} />
+                 ))}
+               </div>
+             ) : (
+                /* Desktop View: Grid layout (3 large + list) */
+                <div className="grid grid-cols-4 gap-3 h-[420px]">
+                    {/* First 3 boxes: Large items with graphs - fill height */}
+                    {events.slice(0, 3).map((event) => (
+                    <MarketCard key={event.id} event={event} isTopItem={true} />
+                    ))}
+                    
+                    {/* 4th box: Compact list of remaining items - no scroll, fits exactly */}
+                    <div className="flex flex-col justify-between border-l border-gray-100 dark:border-gray-800 pl-3 h-full">
+                    {events.slice(3).map((event) => (
+                        <MarketCard key={event.id} event={event} isTopItem={false} />
+                    ))}
+                    </div>
+                </div>
+             )}
+          </>
         )}
       </main>
     </div>

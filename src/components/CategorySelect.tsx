@@ -32,16 +32,16 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
         <select
           value={selectedCategory || 'trending'}
           onChange={(e) => onSelect(e.target.value)}
-          className="appearance-none w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 cursor-pointer font-medium transition-colors hover:bg-gray-100"
+          className="appearance-none w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 pr-10 cursor-pointer font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           {groupOrder.map((groupLabel) => {
             const groupCats = groupedCategories[groupLabel];
             if (!groupCats) return null;
             
             return (
-              <optgroup key={groupLabel} label={groupLabel} className="font-semibold text-gray-900">
+              <optgroup key={groupLabel} label={groupLabel} className="font-semibold text-gray-900 dark:text-gray-100 dark:bg-gray-800">
                 {groupCats.map((category) => (
-                  <option key={category.id} value={category.slug} className="text-gray-700 font-normal">
+                  <option key={category.id} value={category.slug} className="text-gray-700 dark:text-gray-300 font-normal">
                     {category.label}
                   </option>
                 ))}
@@ -49,7 +49,7 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({
             );
           })}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 dark:text-gray-400">
           <ChevronDown className="w-4 h-4" />
         </div>
       </div>
