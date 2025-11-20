@@ -20,15 +20,17 @@ export interface NewsCategory {
   query?: string; // Search query as fallback
 }
 
+// GNews API official categories: general, world, nation, business, technology, entertainment, sports, science, health
 export const getNewsCategories = (): NewsCategory[] => [
-  { id: 'top', label: 'Top Stories', gnewsCategory: 'general' },
-  { id: 'world', label: 'World News', gnewsCategory: 'world' },
-  { id: 'tech', label: 'Technology', gnewsCategory: 'technology' },
-  { id: 'crypto', label: 'Crypto', query: 'cryptocurrency bitcoin' },
+  { id: 'general', label: 'Top Stories', gnewsCategory: 'general' },
+  { id: 'world', label: 'World', gnewsCategory: 'world' },
+  { id: 'nation', label: 'Nation', gnewsCategory: 'nation' },
   { id: 'business', label: 'Business', gnewsCategory: 'business' },
-  { id: 'science', label: 'Science', gnewsCategory: 'science' },
+  { id: 'technology', label: 'Technology', gnewsCategory: 'technology' },
+  { id: 'entertainment', label: 'Entertainment', gnewsCategory: 'entertainment' },
   { id: 'sports', label: 'Sports', gnewsCategory: 'sports' },
-  { id: 'gaming', label: 'Gaming', query: 'gaming esports' },
+  { id: 'science', label: 'Science', gnewsCategory: 'science' },
+  { id: 'health', label: 'Health', gnewsCategory: 'health' },
 ];
 
 export const getGNews = async (category: NewsCategory): Promise<NewsItem[]> => {

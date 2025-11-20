@@ -21,15 +21,16 @@ export interface RedditCategory {
   subreddit: string;
 }
 
+// Popular Reddit subreddits for trending content
 export const getRedditCategories = (): RedditCategory[] => [
-  { id: 'popular', label: 'Popular', subreddit: 'all' },
-  { id: 'world', label: 'World News', subreddit: 'worldnews' },
-  { id: 'tech', label: 'Technology', subreddit: 'technology' },
-  { id: 'crypto', label: 'Crypto', subreddit: 'cryptocurrency' },
+  { id: 'popular', label: 'Popular', subreddit: 'popular' },
+  { id: 'all', label: 'All', subreddit: 'all' },
+  { id: 'news', label: 'News', subreddit: 'news' },
+  { id: 'worldnews', label: 'World News', subreddit: 'worldnews' },
+  { id: 'technology', label: 'Technology', subreddit: 'technology' },
   { id: 'science', label: 'Science', subreddit: 'science' },
   { id: 'gaming', label: 'Gaming', subreddit: 'gaming' },
   { id: 'sports', label: 'Sports', subreddit: 'sports' },
-  { id: 'movies', label: 'Movies', subreddit: 'movies' },
 ];
 
 export const getRedditPosts = async (category: RedditCategory): Promise<RedditPost[]> => {

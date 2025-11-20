@@ -5,7 +5,7 @@ import { NewsCard } from './NewsCard';
 import { Newspaper } from 'lucide-react';
 
 export const NewsWidget: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('top');
+  const [selectedCategory, setSelectedCategory] = useState<string>('general');
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
