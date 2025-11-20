@@ -95,11 +95,6 @@ export const BettingWidget: React.FC = () => {
             </button>
           </div>
         </div>
-
-        {/* Cache Notice */}
-        <div className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 text-center">
-          Data cached for 6 hours to conserve API quota
-        </div>
       </header>
 
       <main className="relative">
