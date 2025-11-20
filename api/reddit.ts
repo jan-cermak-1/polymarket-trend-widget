@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Reddit API - completely free, no API key needed
+// Reddit API - using old.reddit.com which is less restrictive
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,17 +14,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const { subreddit = 'all', sort = 'hot', limit = '12' } = req.query;
     
-    // Reddit JSON API URL
-    const url = `https://www.reddit.com/r/${subreddit}/${sort}.json?limit=${limit}`;
+    // Use old.reddit.com JSON API which is less restrictive
+    const url = `https://old.reddit.com/r/${subreddit}/${sort}.json?limit=${limit}`;
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'https://www.reddit.com/',
-        'Origin': 'https://www.reddit.com',
+        'User-Agent': 'Mozilla/5.0 (compatible; WidgetBot/1.0)',
       },
     });
 
