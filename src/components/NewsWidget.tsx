@@ -5,7 +5,6 @@ import { NewsCard } from './NewsCard';
 import { Newspaper } from 'lucide-react';
 
 export const NewsWidget: React.FC = () => {
-  const categories = getNewsCategories();
   const [selectedCategory, setSelectedCategory] = useState<string>('top');
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +13,7 @@ export const NewsWidget: React.FC = () => {
     if (showLoader) setLoading(true);
     
     try {
+      const categories = getNewsCategories();
       const category = categories.find(c => c.id === selectedCategory) || categories[0];
       const data = await getGoogleNews(category);
       setNews(data.slice(0, 12)); // Limit to 12 items
@@ -23,7 +23,7 @@ export const NewsWidget: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [selectedCategory, categories]);
+  }, [selectedCategory]);
 
   useEffect(() => {
     fetchNews();
@@ -41,7 +41,7 @@ export const NewsWidget: React.FC = () => {
           
           {/* Center: Category Tabs */}
           <div className="flex flex-wrap gap-2 items-center justify-center flex-1">
-            {categories.map((cat) => (
+            {getNewsCategories().map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
