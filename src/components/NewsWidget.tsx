@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { getNewsCategories, getGoogleNews } from '../services/googleNews';
 import type { NewsItem } from '../services/googleNews';
 import { NewsCard } from './NewsCard';
-import { Loader2, Newspaper } from 'lucide-react';
+import { Newspaper } from 'lucide-react';
 
 export const NewsWidget: React.FC = () => {
   const categories = getNewsCategories();
