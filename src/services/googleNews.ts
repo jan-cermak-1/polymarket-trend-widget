@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// For Vercel deployment with serverless function
-const RSS_BASE_URL = '/api/news';
+// GNews API via Vercel serverless function
+const NEWS_API_URL = '/api/news';
 
 export interface NewsItem {
   id: string;
@@ -16,87 +16,55 @@ export interface NewsItem {
 export interface NewsCategory {
   id: string;
   label: string;
-  query: string; // Always use search query for consistency
+  gnewsCategory?: string; // GNews category
+  query?: string; // Search query as fallback
 }
 
 export const getNewsCategories = (): NewsCategory[] => [
-  { id: 'top', label: 'Top Stories', query: 'breaking news' },
-  { id: 'world', label: 'World', query: 'world news' },
-  { id: 'business', label: 'Business', query: 'business news' },
-  { id: 'tech', label: 'Technology', query: 'technology news' },
-  { id: 'crypto', label: 'Crypto', query: 'cryptocurrency bitcoin ethereum' },
-  { id: 'ai', label: 'AI', query: 'artificial intelligence openai' },
-  { id: 'sports', label: 'Sports', query: 'sports news' },
-  { id: 'retail', label: 'Retail', query: 'retail industry ecommerce' },
-  { id: 'entertainment', label: 'Entertainment', query: 'entertainment news' },
+  { id: 'general', label: 'Top Stories', gnewsCategory: 'general' },
+  { id: 'world', label: 'World', gnewsCategory: 'world' },
+  { id: 'business', label: 'Business', gnewsCategory: 'business' },
+  { id: 'technology', label: 'Technology', gnewsCategory: 'technology' },
+  { id: 'crypto', label: 'Crypto', query: 'cryptocurrency bitcoin' },
+  { id: 'entertainment', label: 'Entertainment', gnewsCategory: 'entertainment' },
+  { id: 'sports', label: 'Sports', gnewsCategory: 'sports' },
+  { id: 'science', label: 'Science', gnewsCategory: 'science' },
+  { id: 'health', label: 'Health', gnewsCategory: 'health' },
 ];
 
 export const getGoogleNews = async (category: NewsCategory): Promise<NewsItem[]> => {
   try {
-    const params = new URLSearchParams({
-      hl: 'en-US',
-      gl: 'US',
-      ceid: 'US:en',
-      q: category.query,
-    });
+    const params: any = {
+      lang: 'en',
+      country: 'us',
+      max: '12',
+    };
 
-    // Note: Google RSS returns XML via serverless function
-    const response = await axios.get(`${RSS_BASE_URL}?${params.toString()}`, { 
-      responseType: 'text',
+    if (category.gnewsCategory) {
+      params.category = category.gnewsCategory;
+    } else if (category.query) {
+      params.q = category.query;
+    }
+
+    const response = await axios.get(NEWS_API_URL, { 
+      params,
       timeout: 10000 // 10 second timeout
     });
 
-    return parseRSS(response.data);
+    // GNews API returns JSON format
+    const articles = response.data.articles || [];
+    
+    return articles.map((article: any, index: number) => ({
+      id: article.url || `news-${index}`,
+      title: article.title || 'No Title',
+      link: article.url || '#',
+      pubDate: article.publishedAt || new Date().toISOString(),
+      source: article.source?.name || 'Unknown',
+      image: article.image || undefined,
+      description: article.description || article.content || '',
+    }));
   } catch (error) {
-    console.error('Error fetching Google News:', error);
+    console.error('Error fetching news:', error);
     return [];
   }
-};
-
-const parseRSS = (xmlText: string): NewsItem[] => {
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-  
-  // Check for parsing errors
-  const parserError = xmlDoc.querySelector('parsererror');
-  if (parserError) {
-    console.error('XML parsing error:', parserError.textContent);
-    return [];
-  }
-  
-  const items = xmlDoc.getElementsByTagName("item");
-  const newsItems: NewsItem[] = [];
-
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-    const title = item.getElementsByTagName("title")[0]?.textContent || "No Title";
-    const link = item.getElementsByTagName("link")[0]?.textContent || "#";
-    const pubDateStr = item.getElementsByTagName("pubDate")[0]?.textContent || "";
-    const description = item.getElementsByTagName("description")[0]?.textContent || "";
-    const source = item.getElementsByTagName("source")[0]?.textContent || "Google News";
-
-    // Attempt to extract image from description HTML if present
-    let image = undefined;
-    const imgMatch = description.match(/src="([^"]+)"/);
-    if (imgMatch) {
-      image = imgMatch[1];
-    }
-
-    // Clean up title (Google News often is "Title - Source")
-    const titleParts = title.split(" - ");
-    const cleanTitle = titleParts.length > 1 ? titleParts.slice(0, -1).join(" - ") : title;
-    const cleanSource = titleParts.length > 1 ? titleParts[titleParts.length - 1] : source;
-
-    newsItems.push({
-      id: link + i, // use link + index as ID to ensure uniqueness
-      title: cleanTitle,
-      link,
-      pubDate: pubDateStr,
-      source: cleanSource,
-      image,
-      description
-    });
-  }
-
-  return newsItems;
 };

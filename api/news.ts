@@ -1,5 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+// GNews API - Free tier: 100 requests/day
+// https://gnews.io/
+const GNEWS_API_KEY = process.env.GNEWS_API_KEY || 'demo'; // User needs to set this in Vercel env vars
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -11,13 +15,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { hl, gl, ceid, q } = req.query;
+    const { q, category, lang = 'en', country = 'us', max = '12' } = req.query;
     
-    const url = new URL('https://news.google.com/rss/search');
-    url.searchParams.set('hl', hl as string || 'en-US');
-    url.searchParams.set('gl', gl as string || 'US');
-    url.searchParams.set('ceid', ceid as string || 'US:en');
-    url.searchParams.set('q', q as string || 'breaking news');
+    // Build GNews API URL
+    const url = new URL('https://gnews.io/api/v4/search');
+    
+    if (q) {
+      url.searchParams.set('q', q as string);
+    } else if (category) {
+      url.searchParams.set('category', category as string);
+    } else {
+      url.searchParams.set('category', 'general');
+    }
+    
+    url.searchParams.set('lang', lang as string);
+    url.searchParams.set('country', country as string);
+    url.searchParams.set('max', max as string);
+    url.searchParams.set('apikey', GNEWS_API_KEY);
 
     const response = await fetch(url.toString(), {
       headers: {
@@ -26,16 +40,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!response.ok) {
-      throw new Error(`Google News returned ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`GNews API returned ${response.status}: ${errorText}`);
     }
 
-    const data = await response.text();
+    const data = await response.json();
     
-    res.setHeader('Content-Type', 'text/xml');
-    res.status(200).send(data);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(data);
   } catch (error: any) {
-    console.error('Error proxying Google News:', error);
+    console.error('Error proxying GNews:', error);
     res.status(500).json({ error: error.message });
   }
 }
-

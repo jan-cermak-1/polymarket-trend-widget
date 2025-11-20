@@ -5,7 +5,7 @@ import { NewsCard } from './NewsCard';
 import { Newspaper } from 'lucide-react';
 
 export const NewsWidget: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('top');
+  const [selectedCategory, setSelectedCategory] = useState<string>('general');
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +36,7 @@ export const NewsWidget: React.FC = () => {
           {/* Left: Title */}
           <div className="flex items-center gap-2 shrink-0">
             <Newspaper className="w-4 h-4 text-black dark:text-white" />
-            <h1 className="text-sm font-bold tracking-tight text-black dark:text-white whitespace-nowrap">Google News</h1>
+            <h1 className="text-sm font-bold tracking-tight text-black dark:text-white whitespace-nowrap">News Trends</h1>
           </div>
           
           {/* Center: Category Tabs */}
