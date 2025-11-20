@@ -4,6 +4,9 @@ import { TechmemeWidget } from './components/TechmemeWidget';
 import { RedditWidget } from './components/RedditWidget';
 import { BettingWidget } from './components/BettingWidget';
 import { ESPNWidget } from './components/ESPNWidget';
+import { NHLOfficialWidget } from './components/NHLOfficialWidget';
+import { TheSportsDBWidget } from './components/TheSportsDBWidget';
+import { APISportsWidget } from './components/APISportsWidget';
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
       <RedditWidget />
       <BettingWidget />
       <ESPNWidget />
+      <NHLOfficialWidget />
+      <TheSportsDBWidget />
+      <APISportsWidget />
     </div>
   );
 }
