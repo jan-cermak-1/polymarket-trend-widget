@@ -12,7 +12,8 @@ export const TrendWidget: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timeToNextRefresh, setTimeToNextRefresh] = useState<number>(300); // 5 minutes in seconds
-  
+  const [expandedId, setExpandedId] = useState<string | null>(null); // Track expanded item ID for mobile accordion
+
   // Theme State
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>(() => {
     return (localStorage.getItem('theme') as 'light' | 'dark' | 'system') || 'system';
@@ -118,6 +119,10 @@ export const TrendWidget: React.FC = () => {
         setSelectedCategory(slug);
     }
   };
+  
+  const handleExpand = (id: string) => {
+      setExpandedId(current => current === id ? null : id);
+  };
 
   return (
     <div className="max-w-[1600px] w-full mx-auto p-3 h-fit bg-white dark:bg-gray-900 text-gray-900 dark:text-white font-sans border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm flex flex-col relative transition-colors">
@@ -177,7 +182,7 @@ export const TrendWidget: React.FC = () => {
 
       <main className="relative">
         {loading ? (
-          <div className="flex flex-col lg:flex-row gap-4 h-[600px] lg:h-[420px]">
+          <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[420px]">
             {/* Mobile Loading Skeleton */}
             <div className="lg:hidden flex-1 flex flex-col gap-1">
                {[...Array(10)].map((_, i) => (
@@ -208,9 +213,15 @@ export const TrendWidget: React.FC = () => {
           <>
              {/* Mobile View: Single List of 10 items (all compact) */}
              {isMobile ? (
-               <div className="flex flex-col gap-1 h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+               <div className="flex flex-col gap-1 h-fit">
                  {events.map((event) => (
-                   <MarketCard key={event.id} event={event} isTopItem={false} />
+                   <MarketCard 
+                        key={event.id} 
+                        event={event} 
+                        isTopItem={false} 
+                        isExpanded={expandedId === event.id}
+                        onExpand={() => handleExpand(event.id)}
+                    />
                  ))}
                </div>
              ) : (

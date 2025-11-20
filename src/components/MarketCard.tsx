@@ -8,16 +8,17 @@ import { clsx } from 'clsx';
 interface MarketCardProps {
   event: Event;
   isTopItem?: boolean;
+  isExpanded?: boolean;
+  onExpand?: () => void;
 }
 
-export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false }) => {
+export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false, isExpanded = false, onExpand }) => {
   const mainMarket = event.markets[0];
   const isMultiChoice = event.markets.length > 1 && event.markets.some(m => m.groupItemTitle);
   const [history, setHistory] = useState<PriceHistoryPoint[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const [showTooltipBelow, setShowTooltipBelow] = useState(true); // Default to below to avoid hiding under header
-  const [isExpanded, setIsExpanded] = useState(false); // For mobile accordion
   
   // Helper function to get all options sorted by percentage (limit to 6)
   const getAllOptions = () => {
@@ -435,7 +436,7 @@ export const MarketCard: React.FC<MarketCardProps> = ({ event, isTopItem = false
         <div 
             ref={cardRef} 
             className="group relative flex items-center gap-2 py-1.5 px-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded transition-colors cursor-pointer"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() => onExpand ? onExpand() : null}
         >
             
             {/* Hover Tooltip with Chart - positioned above or below based on viewport position - DESKTOP ONLY */}
